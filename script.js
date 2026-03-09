@@ -455,3 +455,35 @@ updateEmotion = function(emotionName, confidences) {
         }
     }
 };
+
+// --- IRIS TRACKING ---
+document.addEventListener('mousemove', (e) => {
+    const eyes = document.querySelectorAll('.eye');
+    eyes.forEach(eye => {
+        const rect = eye.getBoundingClientRect();
+        const eyeCenterX = rect.left + rect.width / 2;
+        const eyeCenterY = rect.top + rect.height / 2;
+        
+        // Calculate distance and angle from eye center to mouse
+        const deltaX = e.clientX - eyeCenterX;
+        const deltaY = e.clientY - eyeCenterY;
+        const angle = Math.atan2(deltaY, deltaX);
+        
+        // Max distance to consider for the eye shift
+        const maxConsideredDistance = window.innerWidth / 2;
+        const distance = Math.min(Math.hypot(deltaX, deltaY), maxConsideredDistance);
+        
+        // Limit the movement of the iris based on eye boundaries (max ~15px)
+        const maxMove = 15;
+        const moveDistance = (distance / maxConsideredDistance) * maxMove; 
+        
+        const irisX = Math.cos(angle) * moveDistance;
+        const irisY = Math.sin(angle) * moveDistance;
+        
+        const iris = eye.querySelector('.iris');
+        if (iris) {
+            iris.style.setProperty('--iris-x', `${Math.round(irisX)}px`);
+            iris.style.setProperty('--iris-y', `${Math.round(irisY)}px`);
+        }
+    });
+});

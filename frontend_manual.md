@@ -5,7 +5,7 @@ This manual simply breaks down the role and functions of the three core frontend
 ## 1. `index.html` (Structure & Layout)
 This is the root document that defines all of the visible building blocks and groups them into logical sections. 
 - **The Container (`.container`)**: The app uses a full viewport layout containing absolutely positioned elements, moving away from standard scrolling document flow.
-- **The Central Face (`#bigFace`)**: A group of simple `div` elements (eyes, mouth, decorations like tears and fumes) that rely entirely on CSS to dictate their shape. There are no images used for the face.
+- **The Central Face (`#bigFace`)**: A group of simple `div` elements (eyes, mouth, decorations like tears and fumes) that rely entirely on CSS to dictate their shape. There are no images used for the face. The eyes (`.eye`) use a soft shadow instead of a border, and contain a modern, cute `.iris` element that shifts dynamically.
 - **The Input Feeds (`.camera-area`)**: Contains the video placeholder, image uploading inputs, and mock ESP32 toggles overlayed compactly at the bottom left.
 - **The Stats Panel (`.stats-area-wrapper`)**: A hidden slide-out drawer on the right edge. It houses the FER2013 percentage stat progress bars.
 - **Quotation Box**: A simple box on the top right whose text node is targeted by Javascript to update dynamically.
@@ -26,4 +26,5 @@ This script sits on top of the HTML and CSS to simulate hardware backend data an
   2. Updates all 7 progress bar widths in the right-side stats drawer.
   3. Fades the quotation box out, randomly selects a new quote array string, applies it, and fades it back in.
 - **The Blink Loop**: Uses `setTimeout` to recursively append a `.blink` class to the `.eye` DOM elements at randomized 2 to 6-second intervals to give the face lifelike sentience.
+- **Iris Tracking via Mouse**: The script tracks the cursor's coordinates (`mousemove`) relative to the center of each `.eye` and dynamically updates CSS variables (`--iris-x`, `--iris-y`) to let the `.iris` shift smoothly within the eye boundaries.
 - **Mock Simulation Triggers**: Includes event listeners that attach to the UI buttons to spawn random mock emotion data payloads in intervals. *(See `integration_guide.md` on how to replace this with real WebSocket payloads.)*

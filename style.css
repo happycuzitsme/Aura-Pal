@@ -297,10 +297,39 @@ body {
 .eye {
     width: 80px; /* Made eyes significantly wider */
     height: 110px; /* Made eyes taller */
-    background-color: var(--text);
+    background-color: #faf8f5; /* Very soft off-white to contrast with the #fdfbf7 background */
+    box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.04), 0 4px 12px rgba(0, 0, 0, 0.05); /* Soft inner and outer shadows to define the shape without a border */
     border-radius: 50px;
     transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     transform-origin: center;
+    position: relative;
+    overflow: hidden; /* Keep iris inside the eye */
+}
+
+.iris {
+    width: 38px; /* Slightly larger for cuteness */
+    height: 48px; /* Oval shape for a modern yet cute feel */
+    background-color: #6b4c3e; /* Warm, cute brown color */
+    border-radius: 50%;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(calc(-50% + var(--iris-x, 0px)), calc(-50% + var(--iris-y, 0px)));
+    transition: transform 0.15s cubic-bezier(0.2, 0.8, 0.2, 1);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15); /* Slightly softer depth */
+}
+
+/* Cute Minimalist Highlight */
+.iris::after {
+    content: '';
+    position: absolute;
+    top: 15%;
+    right: 25%;
+    width: 12px;
+    height: 12px;
+    background-color: #fff;
+    border-radius: 50%;
+    opacity: 0.9;
 }
 
 /* Add blink class to be triggered via JS */
@@ -374,16 +403,19 @@ body {
     transition: opacity 0.5s;
 }
 
-/* Sparkles (Happy) */
-.sparkle {
+/* Blush (Happy) */
+.blush {
     position: absolute;
-    font-size: 24px;
-    color: #ffd700;
+    width: 50px;
+    height: 25px;
+    background-color: rgba(255, 105, 180, 0.6); /* Soft pink */
+    border-radius: 50%;
+    filter: blur(8px);
     opacity: 0;
-    transition: opacity 0.5s;
+    transition: opacity 0.5s ease-in-out;
 }
-.left-sparkle { top: -10px; left: -20px; }
-.right-sparkle { top: 10px; right: -25px; }
+.left-blush { top: 40px; left: -30px; }
+.right-blush { top: 40px; right: -30px; }
 
 /* Bubbles (Disgust) */
 .bubble {
@@ -440,16 +472,16 @@ body {
     transform: translateY(-20px);
     background-color: var(--happy);
 }
-/* Show Sparkles */
-.face-happy .sparkle {
-    opacity: 1;
-    animation: twinkle 1s alternate infinite;
+/* Show Blush */
+.face-happy .blush {
+    opacity: var(--deco-opacity, 0.8);
+    animation: blush-pulse 2s ease-in-out infinite alternate;
 }
-.face-happy .right-sparkle { animation-delay: 0.5s; }
+.face-happy .right-blush { animation-delay: 0.5s; }
 
-@keyframes twinkle {
-    0% { transform: scale(0.8) rotate(0deg); opacity: 0.5; }
-    100% { transform: scale(1.2) rotate(20deg); opacity: 1; }
+@keyframes blush-pulse {
+    0% { transform: scale(1); opacity: 0.6; }
+    100% { transform: scale(1.1); opacity: var(--deco-opacity, 0.9); }
 }
 
 /* Sad Face */

@@ -54,3 +54,6 @@ In `script.js`, inside the `startMockSimulation()` function, there is a `setInte
 
 1. Remove the line `setInterval(() => { triggerRandomEmotion(); }, 4000);`.
 2. You can rename `startMockSimulation` to something like `connectToRobot` since it is no longer mocking.
+
+## Step 5: Connecting Iris Tracking (Optional)
+The script currently moves the `.iris` dynamically by tracking the user's cursor (`mousemove` event). If your OpenCV/Python backend calculates the subject's face/eye coordinates relative to the camera, you can pass those `(x, y)` coordinates via the WebSocket payload and map them to the `--iris-x` and `--iris-y` CSS variables inside `script.js` so that Aura-Pal essentially "looks" at the user physically!
