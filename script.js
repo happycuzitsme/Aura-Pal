@@ -37,6 +37,16 @@ const EMOTIONS = {
         class: 'face-neutral', 
         color: '#9e9e9e',
         quotes: ["Finding balance in the everyday.", "Stillness is where creativity is born.", "A calm mind brings inner strength."]
+    },
+    'Disgust': {
+        class: 'face-disgust',
+        color: '#aed581',
+        quotes: ["Listen to your gut.", "Protect your energy.", "It's okay to say no to what doesn't serve you.", "Distance yourself from negativity."]
+    },
+    'Fear': {
+        class: 'face-fear',
+        color: '#ba68c8',
+        quotes: ["Courage is feeling fear and doing it anyway.", "It's okay to be scared.", "Every shadow means there's a light nearby.", "Breathe through the panic."]
     }
 };
 
@@ -87,9 +97,20 @@ function updateEmotion(emotionName, confidences) {
     // Add new emotion class
     bigFace.classList.add(EMOTIONS[emotionName].class);
 
+    const mainConf = confidences[emotionName] || 0;
+    
+    // Add intensity class based on confidence rate
+    bigFace.classList.remove('intensity-low', 'intensity-mid', 'intensity-high');
+    if (mainConf <= 40) {
+        bigFace.classList.add('intensity-low');
+    } else if (mainConf <= 75) {
+        bigFace.classList.add('intensity-mid');
+    } else {
+        bigFace.classList.add('intensity-high');
+    }
+
     // Update textual information
     currentEmotionText.innerText = emotionName;
-    const mainConf = confidences[emotionName];
     emotionConfidence.innerText = mainConf ? mainConf.toFixed(1) : "0.0";
 
     // Update each progress bar in the stats section smoothly
@@ -111,16 +132,12 @@ const btnWebcam = document.getElementById('btn-webcam');
 const btnImage = document.getElementById('image-upload');
 const manualEmoButtons = document.querySelectorAll('.btn-emo');
 const webcamStream = document.getElementById('webcamStream');
-const sourceBadge = document.getElementById('sourceBadge');
 const placeholderText = document.getElementById('placeholderText');
-const feedInstruction = document.getElementById('feedInstruction');
 
 function startMockSimulation() {
     stopCurrentStream();
     currentMode = 'esp32';
     updateSourceButtons(btnEsp32);
-    sourceBadge.innerText = "ESP32 MOCK";
-    feedInstruction.innerHTML = '<i class="fa-solid fa-circle-info"></i> Point your ESP32 Camera towards a face to analyze emotion (FER2013).';
     
     videoPlaceholder.style.display = 'none';
     videoStream.src = "https://images.unsplash.com/photo-1544717305-2782549b5136?auto=format&fit=crop&w=800&q=80"; 
@@ -137,8 +154,6 @@ async function startWebcam() {
     stopCurrentStream();
     currentMode = 'webcam';
     updateSourceButtons(btnWebcam);
-    sourceBadge.innerText = "LOCAL WEBCAM";
-    feedInstruction.innerHTML = '<i class="fa-solid fa-circle-info"></i> Analyzing your local camera feed. Smile!';
     
     videoPlaceholder.style.display = 'flex';
     placeholderText.innerText = "Requesting Camera Access...";
@@ -167,8 +182,6 @@ function handleImageUpload(e) {
     stopCurrentStream();
     currentMode = 'image';
     updateSourceButtons(document.getElementById('btn-image'));
-    sourceBadge.innerText = "IMAGE UPLOAD";
-    feedInstruction.innerHTML = '<i class="fa-solid fa-circle-info"></i> Analyzing uploaded image...';
     
     const reader = new FileReader();
     reader.onload = (event) => {
@@ -206,13 +219,13 @@ function updateSourceButtons(activeBtn) {
 }
 
 function triggerRandomEmotion() {
-    const emotions = ['Happy', 'Sad', 'Angry', 'Surprise', 'Neutral'];
+    const emotions = ['Happy', 'Sad', 'Angry', 'Surprise', 'Neutral', 'Disgust', 'Fear'];
     const targetEmotion = emotions[Math.floor(Math.random() * emotions.length)];
     generateEmotionData(targetEmotion);
 }
 
 function generateEmotionData(targetEmotion) {
-    const emotions = ['Happy', 'Sad', 'Angry', 'Surprise', 'Neutral'];
+    const emotions = ['Happy', 'Sad', 'Angry', 'Surprise', 'Neutral', 'Disgust', 'Fear'];
     let confidences = {};
     let remaining = 100;
     

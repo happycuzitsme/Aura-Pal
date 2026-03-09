@@ -15,6 +15,8 @@
     --angry: #e57373;
     --surprise: #ffb74d;
     --neutral: #9e9e9e;
+    --disgust: #aed581;
+    --fear: #ba68c8;
 }
 
 * {
@@ -257,6 +259,32 @@ body {
     50% { transform: translateY(-8px) scale(1.02); }
 }
 
+/* Emotion Intensity Variables */
+.intensity-low {
+    --deco-scale: 0.7;
+    --deco-opacity: 0.4;
+    --anim-speed: 1.5;
+}
+.intensity-mid {
+    --deco-scale: 1;
+    --deco-opacity: 0.8;
+    --anim-speed: 1;
+}
+.intensity-high {
+    --deco-scale: 1.4;
+    --deco-opacity: 1;
+    --anim-speed: 0.6;
+}
+
+/* Hide secondary decorations on low intensity */
+.intensity-low .right-tear,
+.intensity-low .bubble-2,
+.intensity-low .shiver-2,
+.intensity-low .right-sparkle,
+.intensity-low .left-mark {
+    display: none;
+}
+
 .eyes {
     display: flex;
     justify-content: space-between;
@@ -320,19 +348,17 @@ body {
 .left-tear { top: 70px; left: 15px; }
 .right-tear { top: 70px; right: 15px; }
 
-/* Fumes */
-.fume {
+/* Angry Marks */
+.angry-mark {
     position: absolute;
-    width: 40px;
-    height: 40px;
-    background: var(--angry);
-    border-radius: 50%;
+    font-size: 32px;
     opacity: 0;
-    filter: blur(8px);
     transition: opacity 0.5s;
+    user-select: none;
+    z-index: 10;
 }
-.left-fume { top: -20px; left: -20px; }
-.right-fume { top: -20px; right: -20px; }
+.left-mark { top: -20px; left: -20px; transform: scaleX(-1); }
+.right-mark { top: -20px; right: -20px; }
 
 /* Sweat */
 .sweat {
@@ -344,6 +370,57 @@ body {
     background: var(--surprise);
     border-radius: 0 50% 50% 50%;
     transform: rotate(45deg);
+    opacity: 0;
+    transition: opacity 0.5s;
+}
+
+/* Sparkles (Happy) */
+.sparkle {
+    position: absolute;
+    font-size: 24px;
+    color: #ffd700;
+    opacity: 0;
+    transition: opacity 0.5s;
+}
+.left-sparkle { top: -10px; left: -20px; }
+.right-sparkle { top: 10px; right: -25px; }
+
+/* Bubbles (Disgust) */
+.bubble {
+    position: absolute;
+    bottom: -10px;
+    width: 20px;
+    height: 20px;
+    background: var(--disgust);
+    border-radius: 50%;
+    opacity: 0;
+    transition: opacity 0.5s;
+}
+.bubble-1 { left: 130px; width: 15px; height: 15px; }
+.bubble-2 { right: 130px; }
+
+/* Shiver lines (Fear) */
+.shiver-line {
+    position: absolute;
+    top: 50px;
+    width: 4px;
+    height: 30px;
+    background: var(--fear);
+    opacity: 0;
+    border-radius: 4px;
+    transition: opacity 0.5s;
+}
+.shiver-1 { left: -30px; transform: rotate(-15deg); }
+.shiver-2 { right: -30px; transform: rotate(15deg); }
+
+/* ZZZ (Neutral) */
+.zzz {
+    position: absolute;
+    top: -20px;
+    right: -20px;
+    font-size: 20px;
+    font-weight: 800;
+    color: var(--neutral);
     opacity: 0;
     transition: opacity 0.5s;
 }
@@ -363,6 +440,17 @@ body {
     transform: translateY(-20px);
     background-color: var(--happy);
 }
+/* Show Sparkles */
+.face-happy .sparkle {
+    opacity: 1;
+    animation: twinkle 1s alternate infinite;
+}
+.face-happy .right-sparkle { animation-delay: 0.5s; }
+
+@keyframes twinkle {
+    0% { transform: scale(0.8) rotate(0deg); opacity: 0.5; }
+    100% { transform: scale(1.2) rotate(20deg); opacity: 1; }
+}
 
 /* Sad Face */
 .face-sad .eye {
@@ -381,14 +469,14 @@ body {
 }
 /* Show Tears */
 .face-sad .tear { 
-    opacity: 0.8; 
-    animation: flow 2s ease-in infinite;
+    opacity: var(--deco-opacity, 0.8); 
+    animation: flow calc(2s * var(--anim-speed, 1)) ease-in infinite;
 }
 
 @keyframes flow {
-    0% { transform: translateY(0) rotate(45deg) scale(1); opacity: 0; }
-    20% { opacity: 0.8; transform: translateY(10px) rotate(45deg) scale(1.1); }
-    100% { transform: translateY(50px) rotate(45deg) scale(0.5); opacity: 0; }
+    0% { transform: translateY(0) rotate(45deg) scale(calc(1 * var(--deco-scale, 1))); opacity: 0; }
+    20% { opacity: var(--deco-opacity, 0.8); transform: translateY(10px) rotate(45deg) scale(calc(1.1 * var(--deco-scale, 1))); }
+    100% { transform: translateY(50px) rotate(45deg) scale(calc(0.5 * var(--deco-scale, 1))); opacity: 0; }
 }
 
 /* Angry Face */
@@ -408,10 +496,10 @@ body {
     background-color: var(--angry);
     animation: shake 0.5s infinite;
 }
-/* Show Fumes */
-.face-angry .fume {
-    opacity: 0.6;
-    animation: rise 3s ease-out infinite;
+/* Show Angry Mark */
+.face-angry .angry-mark {
+    opacity: var(--deco-opacity, 0.8);
+    animation: throb calc(0.6s * var(--anim-speed, 1)) ease-in-out infinite alternate;
 }
 
 @keyframes shake {
@@ -419,10 +507,9 @@ body {
     50% { transform: translateY(2px) rotate(-3deg); }
 }
 
-@keyframes rise {
-    0% { transform: translateY(0) scale(1); opacity: 0.6; }
-    50% { opacity: 0.3; }
-    100% { transform: translateY(-40px) scale(2); opacity: 0; }
+@keyframes throb {
+    0% { transform: scale(calc(0.8 * var(--deco-scale, 1))); }
+    100% { transform: scale(calc(1.3 * var(--deco-scale, 1))); text-shadow: 0 0 10px rgba(255,0,0,0.5); }
 }
 
 /* Surprise Face */
@@ -441,17 +528,84 @@ body {
 }
 /* Show Sweat */
 .face-surprise .sweat {
-    opacity: 0.9;
-    animation: drop 1.5s ease-in infinite;
+    opacity: var(--deco-opacity, 0.9);
+    animation: drop calc(1.5s * var(--anim-speed, 1)) ease-in infinite;
 }
 
 @keyframes drop {
-    0% { transform: translateY(0) rotate(45deg); opacity: 0; }
-    30% { transform: translateY(5px) rotate(45deg); opacity: 0.9; }
-    100% { transform: translateY(30px) rotate(45deg); opacity: 0; }
+    0% { transform: translateY(0) rotate(45deg) scale(calc(1 * var(--deco-scale, 1))); opacity: 0; }
+    30% { transform: translateY(5px) rotate(45deg) scale(calc(1 * var(--deco-scale, 1))); opacity: var(--deco-opacity, 0.9); }
+    100% { transform: translateY(30px) rotate(45deg) scale(calc(1 * var(--deco-scale, 1))); opacity: 0; }
+}
+
+/* Disgust Face */
+.face-disgust .eye {
+    height: 50px;
+    border-radius: 10px 10px 30px 30px;
+    transform: translateY(15px) rotate(-10deg);
+}
+.face-disgust .right-eye {
+    transform: translateY(15px) rotate(10deg);
+}
+.face-disgust .mouth {
+    width: 90px;
+    height: 40px;
+    border-radius: 20px 20px 60px 60px;
+    transform: translateY(0px) scaleX(0.8);
+    background-color: var(--disgust);
+}
+/* Show Bubbles */
+.face-disgust .bubble {
+    opacity: var(--deco-opacity, 0.8);
+    animation: bubble-float calc(2s * var(--anim-speed, 1)) infinite ease-in;
+}
+.face-disgust .bubble-2 { animation-delay: 1s; }
+
+@keyframes bubble-float {
+    0% { transform: translateY(0) scale(calc(1 * var(--deco-scale, 1))); opacity: var(--deco-opacity, 0.8); }
+    100% { transform: translateY(-30px) scale(calc(1.5 * var(--deco-scale, 1))); opacity: 0; }
+}
+
+/* Fear Face */
+.face-fear .eye {
+    height: 100px;
+    width: 60px;
+    border-radius: 50px;
+    transform: translateY(5px);
+    animation: tremble 0.1s infinite;
+}
+.face-fear .mouth {
+    width: 50px;
+    height: 30px;
+    border-radius: 30px;
+    transform: translateY(10px);
+    background-color: var(--fear);
+    animation: tremble 0.1s infinite;
+}
+/* Show Shivers */
+.face-fear .shiver-line {
+    opacity: var(--deco-opacity, 0.8);
+    animation: tremble calc(0.1s * var(--anim-speed, 1)) infinite;
+}
+
+@keyframes tremble {
+    0% { transform: translate(1px, 1px) rotate(0deg) scale(var(--deco-scale, 1)); }
+    50% { transform: translate(-1px, -1px) rotate(-1deg) scale(var(--deco-scale, 1)); }
+    100% { transform: translate(1px, -1px) rotate(1deg) scale(var(--deco-scale, 1)); }
 }
 
 /* Neutral Face (Default) uses base .eye and .mouth classes */
+/* Show ZZZ */
+.face-neutral .zzz {
+    opacity: var(--deco-opacity, 0.7);
+    animation: zzz-float calc(3s * var(--anim-speed, 1)) infinite ease-out;
+}
+
+@keyframes zzz-float {
+    0% { transform: translate(0, 0) scale(calc(0.8 * var(--deco-scale, 1))); opacity: 0; }
+    20% { opacity: var(--deco-opacity, 0.7); }
+    100% { transform: translate(20px, -40px) scale(calc(1.5 * var(--deco-scale, 1))); opacity: 0; }
+}
 
 
 /* Emotion Labels Text below face */
@@ -779,6 +933,16 @@ body {
 .fill-neutral {
     background-color: var(--neutral);
     box-shadow: 0 0 10px var(--neutral);
+}
+
+.fill-disgust {
+    background-color: var(--disgust);
+    box-shadow: 0 0 10px var(--disgust);
+}
+
+.fill-fear {
+    background-color: var(--fear);
+    box-shadow: 0 0 10px var(--fear);
 }
 
 /* Interactive Controls Section */

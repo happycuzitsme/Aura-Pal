@@ -31,7 +31,7 @@ ws.onmessage = (event) => {
     // The expected format from your Python server should look exactly like this:
     // {
     //    "primaryEmotion": "Happy",
-    //    "confidences": { "Happy": 88.5, "Sad": 2.1, "Angry": 0, "Surprise": 4.4, "Neutral": 5.0 }
+    //    "confidences": { "Happy": 88.5, "Sad": 2.1, "Angry": 0, "Surprise": 4.4, "Neutral": 5.0, "Disgust": 0, "Fear": 0 }
     // }
     
     // Update the UI if we aren't manually overriding it
@@ -44,8 +44,8 @@ ws.onmessage = (event) => {
 ## Step 3: Python Backend Formatting
 Ensure your Python server is formatting its output dictionary precisely to match what the `updateEmotion()` function expects. 
 
-- The `primaryEmotion` string **MUST** exactly match one of these cases: `"Happy"`, `"Sad"`, `"Angry"`, `"Surprise"`, `"Neutral"`.
-- The `confidences` object must contain numerical percentages (0-100) for all five of those keys perfectly capitalized.
+- The `primaryEmotion` string **MUST** exactly match one of these cases: `"Happy"`, `"Sad"`, `"Angry"`, `"Surprise"`, `"Neutral"`, `"Disgust"`, `"Fear"`.
+- The `confidences` object must contain numerical percentages (0-100) for all seven of those keys perfectly capitalized.
 
 *(If your Python script uses lowercase keys like "happy" or "sad", you should either `.capitalize()` them in Python before emitting the JSON, or map them inside the `ws.onmessage` handler before calling `updateEmotion()`.)*
 

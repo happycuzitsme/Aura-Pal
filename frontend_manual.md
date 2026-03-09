@@ -15,14 +15,15 @@ This file is the engine behind the "modern cozy vibe" and all visual states.
 - **CSS Variables `:root`**: At the very top, we define a pastel color palette and assign explicit colors for every single emotion (e.g. `--happy`, `--sad`) to maintain visual consistency everywhere.
 - **Glassmorphism (`.glass-panel`)**: Uses semi-transparent background colors paired with `backdrop-filter: blur(16px)` to create the frosted glass effect on panels.
 - **Face State Targeting**: The styling uses parent descendent selectors to dramatically alter the face layout based on what class is applied to the root face object. For example, applying `.face-sad` to the main container triggers CSS rules that shrink and tilt `.eye` and display `.tear`. 
-- **Idle Animators (`@keyframes`)**: Manages continuous CSS loops like the gradient background pulse (`bg-pulse`), the face bobbing (`idle-float`), and the emotion-specific particle emitters like fumes rising (`rise`) and tears dropping (`flow`).  
+- **Intensity Variables**: The CSS calculates the size, opacity, and animation speed of tiny decorations using variables like `--deco-scale` defined by the current intensity class (e.g. `.intensity-high`).
+- **Idle Animators (`@keyframes`)**: Manages continuous CSS loops like the gradient background pulse (`bg-pulse`), the face bobbing (`idle-float`), and the emotion-specific particle emitters like anime marks throbbing (`throb`), bubbles floating (`bubble-float`), and tears dropping (`flow`).  
 
 ## 3. `script.js` (Logic & Interactivity)
 This script sits on top of the HTML and CSS to simulate hardware backend data and manage DOM updates.
 - **Emotion Mapping (`EMOTIONS`)**: A constant dictionary mapping the standard FER2013 output string (e.g. `"Happy"`) to the specific CSS class name (`"face-happy"`), UI colors, and a list of thematic quotations.
 - **`updateEmotion()` Function**: The core workhorse function. When given an emotion name and confidence dictionary, it:
-  1. Removes the previous emotion class from the `#bigFace` container, forces a DOM reflow, and applies the new class. This tells the CSS to trigger the transition animations resizing the eyes and mouth.
-  2. Updates all progress bar widths in the sidebar.
+  1. Removes the previous emotion and intensity classes from the `#bigFace` container, forces a DOM reflow, and applies the new ones. This tells the CSS to trigger the transition animations and calculate decoration scaling.
+  2. Updates all 7 progress bar widths in the right-side stats drawer.
   3. Fades the quotation box out, randomly selects a new quote array string, applies it, and fades it back in.
 - **The Blink Loop**: Uses `setTimeout` to recursively append a `.blink` class to the `.eye` DOM elements at randomized 2 to 6-second intervals to give the face lifelike sentience.
 - **Mock Simulation Triggers**: Includes event listeners that attach to the UI buttons to spawn random mock emotion data payloads in intervals. *(See `integration_guide.md` on how to replace this with real WebSocket payloads.)*
